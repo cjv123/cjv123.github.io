@@ -1,6 +1,6 @@
     window.onload = function() {
 
-        var game = new Phaser.Game(640,1136, Phaser.AUTO, '', { preload: preload, create: create ,update:update});
+        var game = new Phaser.Game(640,1136, Phaser.CANVAS, '', { preload: preload, create: create ,update:update});
         var plane;
         var old_point = new Phaser.Point(0,0);
         var bullet_group;
