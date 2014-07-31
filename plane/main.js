@@ -1,10 +1,7 @@
     window.onload = function() {
 
-        var game = new Phaser.Game(640,1136, Phaser.CANVAS, '', { preload: preload, create: create ,update:update});
-        var plane;
-        var old_point = new Phaser.Point(0,0);
-        var bullet_group;
-        var bullet_make_index = 0;
+        var game = new Phaser.Game(640,1136, Phaser.CANVAS, '', { preload: preload, create: create });
+       
 
         function preload () {
             //  This sets a limit on the up-scale
@@ -15,27 +12,112 @@
 
             game.load.image('plane', 'resource/plane.png');
             game.load.image('bullet','resource/bullet.png');
+            game.load.spritesheet('failtext', 'resource/fail.png', 201, 93, 6);
         }
 
         function create () {
-            plane = game.add.sprite(game.world.centerX, game.world.centerY, 'plane');
+            game.state.add('game', game_state);
+            game.state.add('gameover',gameover_state);
 
-            bullet_group = game.add.group();
-            var bullet;
-            for (var i = 0; i <100; i++) {
-                bullet = game.add.sprite(0,0,'bullet');
-                game.physics.enable(bullet,Phaser.Physics.ARCADE);
-                bullet.visible = false;
-                bullet_group.add(bullet);
-            };
-
-            makeBullet();
+            game.state.start('game');
         }
 
-        function makeBullet(){
+        
+
+};
+
+var game_state={};
+game_state = function (game) {
+    this.plane;
+    this.old_point = new Phaser.Point(0,0);
+    this.bullet_group;
+    this.bullet_make_index = 0;
+    this.game_timer=0;
+    this.make_bullet_event;
+    this.game_timer_event;
+
+    this.game;        //  a reference to the currently running game
+    this.add;       //  used to add sprites, text, groups, etc
+    this.camera;    //  a reference to the game camera
+    this.cache;     //  the game cache
+    this.input;     //  the global input manager (you can access this.input.keyboard, this.input.mouse, as well from it)
+    this.load;      //  for preloading assets
+    this.math;      //  lots of useful common math operations
+    this.sound;     //  the sound manager - add a sound, play one, set-up markers, etc
+    this.stage;     //  the game stage
+    this.time;      //  the clock
+    this.tweens;    //  the tween manager
+    this.state;     //  the state manager
+    this.world;     //  the game world
+    this.particles; //  the particle manager
+    this.physics;   //  the physics manager
+    this.rnd;       //  the repeatable random number generator
+};
+
+game_state.prototype = {
+    preload: function () {
+
+    },
+
+    create: function () {
+        var game = this.game;
+        var plane = game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'plane');
+        this.plane = plane;
+
+        game.physics.enable(plane,Phaser.Physics.ARCADE);
+
+        this.bullet_group = game.add.group();
+        var bullet;
+        for (var i = 0; i <100; i++) {
+            bullet = game.add.sprite(0,0,'bullet');
+            game.physics.enable(bullet,Phaser.Physics.ARCADE);
+            bullet.visible = false;
+            this.bullet_group.add(bullet);
+        };
+
+        this.makeBullet();
+
+        this.make_bullet_event = game.time.events.loop(Phaser.Timer.SECOND*5, this.makeBullet, this);
+        this.game_timer_event = game.time.events.loop(Phaser.Timer.SECOND,function(){
+            this.game_timer+=1;
+        },this);
+    },
+
+    update: function (){
+        var game = this.game;
+        var plane = this.plane;
+        if (game.input.mousePointer.isDown) {
+                var nowPoint = game.input.mousePointer;
+
+                if (!(this.old_point.x ==0 && this.old_point.y==0)){
+                    var dx = nowPoint.x - this.old_point.x;
+                    var dy = nowPoint.y - this.old_point.y;
+                   // console.log('dx,dy',dx,dy);
+                    plane.x += dx*1.5;
+                    plane.y += dy*1.5;
+
+                }
+                this.old_point.x = nowPoint.x;
+                this.old_point.y = nowPoint.y;
+        }
+        else
+        {
+            this.old_point.x = 0;
+            this.old_point.y =0 ;
+        }
+
+        for (var i=0;i<100;i++){
+            bullet = this.bullet_group.getAt(this.bullet_make_index);
+        }
+
+        game.physics.arcade.overlap(plane,this.bullet_group,this.gameover,null,this);
+    },
+
+    makeBullet: function(){
+            var game = this.game; 
             var bullet;
             for (var i=0;i<50;i++){
-                bullet = bullet_group.getAt(bullet_make_index);
+                bullet = this.bullet_group.getAt(this.bullet_make_index);
                 if (!bullet)
                     continue;
 
@@ -60,7 +142,7 @@
                             sing = -1;
                         bullet.body.velocity.x = Math.floor((game.rnd.frac()*1000)%100 * sign);
                         bullet.body.velocity.y = - (game.rnd.frac()*(200-100) + 100);
-                        console.log('vy:',bullet.body.velocity.y);
+                       // console.log('vy:',bullet.body.velocity.y);
                    break;
                    case 2:
                         bullet.x = -bullet.width;
@@ -86,35 +168,51 @@
 
                 bullet.visible = true;
 
-                bullet_make_index++;
-                if (bullet_make_index>=100)
-                    bullet_make_index = 0;
+                this.bullet_make_index++;
+                if (this.bullet_make_index>=100)
+                    this.bullet_make_index = 0;
             }
-        }
-
-        function update(){
-
-            if (game.input.mousePointer.isDown) {
-                var nowPoint = game.input.mousePointer;
-
-                if (!(old_point.x ==0 && old_point.y==0)){
-                    var dx = nowPoint.x - old_point.x;
-                    var dy = nowPoint.y - old_point.y;
-                   // console.log('dx,dy',dx,dy);
-                    plane.x += dx*1.5;
-                    plane.y += dy*1.5;
-
-                }
-                old_point.x = nowPoint.x;
-                old_point.y = nowPoint.y;
-            }
-            else
-            {
-                old_point.x = 0;
-                old_point.y =0 ;
-            }
-        }
+    },
 
 
+    gameover : function(){
+            console.log('game over!');
+            this.plane.kill();
+            this.game.time.events.remove(this.game_timer_event);
+            this.game.time.events.remove(this.make_bullet_event);
+            this.state.start('gameover');
+    }
 
-};
+
+}
+
+
+gameover_state = {};
+gameover_state = function(game){
+
+}
+
+gameover_state.prototype ={
+    preload: function () {
+
+    },
+
+    create: function () {
+    }
+}
+
+
+title_state = {};
+title_state = function(game){
+
+}
+
+title_state.prototype ={
+    preload: function () {
+
+    },
+
+    create: function () {
+    }
+}
+
