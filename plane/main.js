@@ -12,8 +12,7 @@
             game.scale.pageAlignVertically = true;
 
             game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            game.scale.setScreenSize();
-
+            game.scale.setScreenSize(true);
 
             game.load.image('plane', 'resource/plane.png');
             game.load.image('bullet','resource/bullet.png');
