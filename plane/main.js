@@ -12,7 +12,7 @@
             game.scale.pageAlignVertically = true;
 
             game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            game.scale.setScreenSize();
+            game.scale.setScreenSize(true);
 
             game.load.image('plane', 'resource/plane.png');
             game.load.image('bullet','resource/bullet.png');
@@ -21,7 +21,7 @@
             game.load.image('lifetime','resource/lifetime.png');
             game.load.image('title','resource/title.png');
             game.load.image('touchtostart','resource/touchtostart.png');
-            game.load.image('star','resource/star.png');
+            game.load.spritesheet('star','resource/star.png',1,1,4);
         }
 
         function create () {
@@ -72,6 +72,7 @@ game_state.prototype = {
     },
 
     create: function () {
+        game_timer = 0;
         var game = this.game;
         var plane = game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'plane');
         this.plane = plane;
@@ -258,9 +259,11 @@ gameover_state.prototype ={
         }
 
         this.game.add.sprite(this.game.world.centerX,this.game.world.centerY - 100,'failtext',failFrameIndex).anchor.set(0.5);
-        this.game.add.sprite(this.game.world.centerX,this.game.world.centerY +50,'lifetime').anchor.set(0.5);
+        lifetime_sp = this.game.add.sprite(this.game.world.centerX,this.game.world.centerY +50,'lifetime');
+        lifetime_sp.anchor.set(0.5);
+        lifetime_sp.scale.set(2,2);
 
-        this.game.add.text(this.game.world.centerX, this.game.world.centerY +200,gametime.toFixed(1)+'s',{font:'62px Arial',fill:'#FF0000'}).anchor.set(0.5);
+        this.game.add.text(this.game.world.centerX, this.game.world.centerY +150,gametime.toFixed(1)+'s',{font:'72px Arial',fill:'#FF0000'}).anchor.set(0.5);
 
         var game = this.game;
         this.game.input.onTap.add(function(e){
@@ -300,16 +303,20 @@ title_state.prototype ={
         this.game.input.onTap.add(function(e){
             game.state.start('game');
         });
-        /*
-        this.emitter_star = this.game.add.emitter(this.game.world.centerX,this.game.world.centerY,400);
+
+        
+        this.emitter_star = this.game.add.emitter(this.game.world.centerX,this.game.world.centerY);
+        this.emitter_star.makeParticles('star',[0,1,2,3],500);
+        this.emitter_star.scale.set(4,4);
         this.emitter_star.setXSpeed(-10,10);
-        this.emitter_star.setYSpeed(0,5);
+        this.emitter_star.setYSpeed(0,20);
+        this.emitter_star.gravity= 0;
         this.emitter_star.width = this.game.width;
         this.emitter_star.height = this.game.height;
         this.emitter_star.setRotation(0, 0);
-        this.emitter_star.makeParticles('star');
-        this.emitter_star.start(false,2000,50);
-        */
+        
+        this.emitter_star.start(false,5000,1);
+        
     }
 }
 
