@@ -1,18 +1,18 @@
     window.onload = function() {
 
-        var game = new Phaser.Game(640,1136, Phaser.CANVAS, '', { preload: preload, create: create });
+        var game = new Phaser.Game(640,960, Phaser.CANVAS, '', { preload: preload, create: create });
        
 
         function preload () {
             //  This sets a limit on the up-scale
             game.scale.maxWidth = 640;
-            game.scale.maxHeight = 960;
+            game.scale.maxHeight = 1136;
 
             game.scale.pageAlignHorizontally = true;
             game.scale.pageAlignVertically = true;
 
             game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-            game.scale.setScreenSize(true);
+            game.scale.setScreenSize();
 
             game.load.image('plane', 'resource/plane.png');
             game.load.image('bullet','resource/bullet.png');
