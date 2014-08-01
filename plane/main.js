@@ -13,18 +13,26 @@
             game.load.image('plane', 'resource/plane.png');
             game.load.image('bullet','resource/bullet.png');
             game.load.spritesheet('failtext', 'resource/fail.png', 201, 93, 6);
+            game.load.spritesheet('plane_b','resource/plane_b.png',13,13,2);
+            game.load.image('lifetime','resource/lifetime.png');
+            game.load.image('title','resource/title.png');
+            game.load.image('touchtostart','resource/touchtostart.png');
+            game.load.image('star','resource/star.png');
         }
 
         function create () {
+            game.state.add('title',title_state);
             game.state.add('game', game_state);
             game.state.add('gameover',gameover_state);
 
-            game.state.start('game');
+            game.state.start('title');
         }
 
         
 
 };
+
+var game_timer=0;
 
 var game_state={};
 game_state = function (game) {
@@ -32,9 +40,9 @@ game_state = function (game) {
     this.old_point = new Phaser.Point(0,0);
     this.bullet_group;
     this.bullet_make_index = 0;
-    this.game_timer=0;
     this.make_bullet_event;
     this.game_timer_event;
+    this.emitter_die;
 
     this.game;        //  a reference to the currently running game
     this.add;       //  used to add sprites, text, groups, etc
@@ -63,6 +71,13 @@ game_state.prototype = {
         var game = this.game;
         var plane = game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'plane');
         this.plane = plane;
+        plane.anchor.set(0.5);
+        this.emitter_die = game.add.emitter();
+        this.emitter_die.setXSpeed(-500,500);
+        this.emitter_die.setYSpeed(-500,500);
+        this.emitter_die.setRotation(-100,-100);
+        this.emitter_die.setSize(5,5);
+        this.emitter_die.makeParticles('plane_b',[0,1],8);
 
         game.physics.enable(plane,Phaser.Physics.ARCADE);
 
@@ -78,24 +93,22 @@ game_state.prototype = {
         this.makeBullet();
 
         this.make_bullet_event = game.time.events.loop(Phaser.Timer.SECOND*5, this.makeBullet, this);
-        this.game_timer_event = game.time.events.loop(Phaser.Timer.SECOND,function(){
-            this.game_timer+=1;
+        this.game_timer_event = game.time.events.loop(100,function(){
+            game_timer+=1;
         },this);
     },
 
     update: function (){
         var game = this.game;
         var plane = this.plane;
-        if (game.input.mousePointer.isDown) {
-                var nowPoint = game.input.mousePointer;
-
+        if (game.input.pointer1.isDown) {
+                //console.log('dx,dy');
+                var nowPoint = {x:game.input.x,y:game.input.y};
                 if (!(this.old_point.x ==0 && this.old_point.y==0)){
                     var dx = nowPoint.x - this.old_point.x;
                     var dy = nowPoint.y - this.old_point.y;
-                   // console.log('dx,dy',dx,dy);
                     plane.x += dx*1.5;
                     plane.y += dy*1.5;
-
                 }
                 this.old_point.x = nowPoint.x;
                 this.old_point.y = nowPoint.y;
@@ -110,7 +123,12 @@ game_state.prototype = {
             bullet = this.bullet_group.getAt(this.bullet_make_index);
         }
 
-        game.physics.arcade.overlap(plane,this.bullet_group,this.gameover,null,this);
+        game.physics.arcade.overlap(plane,this.bullet_group,function(){
+            plane.kill();
+            this.emitter_die.at(plane);
+            this.emitter_die.start(true,0,0,8);
+            game.time.events.repeat(Phaser.Timer.SECOND * 2, 1,this.gameover, this);
+        },null,this);
     },
 
     makeBullet: function(){
@@ -177,7 +195,6 @@ game_state.prototype = {
 
     gameover : function(){
             console.log('game over!');
-            this.plane.kill();
             this.game.time.events.remove(this.game_timer_event);
             this.game.time.events.remove(this.make_bullet_event);
             this.state.start('gameover');
@@ -189,7 +206,7 @@ game_state.prototype = {
 
 gameover_state = {};
 gameover_state = function(game){
-
+    this.game;
 }
 
 gameover_state.prototype ={
@@ -198,13 +215,50 @@ gameover_state.prototype ={
     },
 
     create: function () {
+        var gametime = game_timer/10;
+        var failFrameIndex = 0;
+        if (gametime<20)
+        {
+            failFrameIndex = 0;
+        }
+        else if (gametime>=20 && gametime<40)
+        {
+            failFrameIndex = 1;
+        }
+        else if (gametime>=40 && gametime<60)
+        {
+            failFrameIndex = 2;
+        }
+        else if (gametime>=60 && gametime<80)
+        {
+            failFrameIndex = 3;
+        }
+        else if (gametime>=80 && gametime<100)
+        {
+            failFrameIndex = 4;
+        }
+        else if (gametime>=100)
+        {
+            failFrameIndex = 5;
+        }
+
+        this.game.add.sprite(this.game.world.centerX,this.game.world.centerY - 100,'failtext',failFrameIndex).anchor.set(0.5);
+        this.game.add.sprite(this.game.world.centerX,this.game.world.centerY +50,'lifetime').anchor.set(0.5);
+
+        this.game.add.text(this.game.world.centerX, this.game.world.centerY +200,gametime.toFixed(1)+'s',{font:'62px Arial',fill:'#FF0000'}).anchor.set(0.5);
+
+        var game = this.game;
+        this.game.input.onTap.add(function(e){
+            game.state.start('title');
+        });
     }
 }
 
 
 title_state = {};
 title_state = function(game){
-
+    this.game;
+    this.emitter_star;
 }
 
 title_state.prototype ={
@@ -213,6 +267,34 @@ title_state.prototype ={
     },
 
     create: function () {
+        this.game.add.sprite(this.game.world.centerX,this.game.world.centerY - 100,'title').anchor.set(0.5);
+        var touch_text = this.game.add.sprite(this.game.world.centerX,this.game.world.centerY +200,'touchtostart');
+        touch_text.anchor.set(0.5);
+        this.game.physics.enable(touch_text,Phaser.Physics.ARCADE);
+        
+        this.game.time.events.loop(500,function(){
+            if (touch_text.visible == true) {
+                touch_text.visible = false;
+            }
+            else{
+                touch_text.visible = true;
+            }
+        },this);
+        
+        var game = this.game;
+        this.game.input.onTap.add(function(e){
+            game.state.start('game');
+        });
+        /*
+        this.emitter_star = this.game.add.emitter(this.game.world.centerX,this.game.world.centerY,400);
+        this.emitter_star.setXSpeed(-10,10);
+        this.emitter_star.setYSpeed(0,5);
+        this.emitter_star.width = this.game.width;
+        this.emitter_star.height = this.game.height;
+        this.emitter_star.setRotation(0, 0);
+        this.emitter_star.makeParticles('star');
+        this.emitter_star.start(false,2000,50);
+        */
     }
 }
 
