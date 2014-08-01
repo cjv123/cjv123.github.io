@@ -132,6 +132,13 @@ game_state.prototype = {
             this.emitter_die.start(true,0,0,8);
             game.time.events.repeat(Phaser.Timer.SECOND * 2, 1,this.gameover, this);
         },null,this);
+
+        if (false == plane.inWorld) {
+             plane.kill();
+            this.emitter_die.at(plane);
+            this.emitter_die.start(true,0,0,8);
+            game.time.events.repeat(Phaser.Timer.SECOND * 2, 1,this.gameover, this);
+        }
     },
 
     makeBullet: function(){
