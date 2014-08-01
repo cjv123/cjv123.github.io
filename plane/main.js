@@ -5,8 +5,8 @@
 
         function preload () {
             //  This sets a limit on the up-scale
-            game.scale.maxWidth = 640;
-            game.scale.maxHeight = 1136;
+            game.scale.maxWidth = 640*2;
+            game.scale.maxHeight = 960*2;
 
             game.scale.pageAlignHorizontally = true;
             game.scale.pageAlignVertically = true;
