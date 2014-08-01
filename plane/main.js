@@ -6,11 +6,11 @@
         function preload () {
             //  This sets a limit on the up-scale
             game.scale.maxWidth = 640;
-            game.scale.maxHeight = 1136;
+            game.scale.maxHeight = 960;
 
             game.scale.pageAlignHorizontally = true;
             game.scale.pageAlignVertically = true;
-            
+
             game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
             game.scale.setScreenSize();
 
