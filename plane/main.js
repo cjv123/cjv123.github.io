@@ -127,18 +127,20 @@ game_state.prototype = {
         }
 
         game.physics.arcade.overlap(plane,this.bullet_group,function(){
-            plane.kill();
-            this.emitter_die.at(plane);
-            this.emitter_die.start(true,0,0,8);
-            game.time.events.repeat(Phaser.Timer.SECOND * 2, 1,this.gameover, this);
+           this.planeBroken();
         },null,this);
 
         if (false == plane.inWorld) {
-             plane.kill();
-            this.emitter_die.at(plane);
-            this.emitter_die.start(true,0,0,8);
-            game.time.events.repeat(Phaser.Timer.SECOND * 2, 1,this.gameover, this);
+            this.planeBroken();
         }
+    },
+
+    planeBroken: function(){
+        this.plane.kill();
+        this.emitter_die.at(this.plane);
+        this.emitter_die.start(true,0,0,8);
+        this.game.time.events.remove(this.game_timer_event);
+        this.game.time.events.repeat(Phaser.Timer.SECOND * 2, 1,this.gameover, this);
     },
 
     makeBullet: function(){
@@ -205,7 +207,6 @@ game_state.prototype = {
 
     gameover : function(){
             console.log('game over!');
-            this.game.time.events.remove(this.game_timer_event);
             this.game.time.events.remove(this.make_bullet_event);
             this.state.start('gameover');
     }
