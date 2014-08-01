@@ -101,9 +101,11 @@ game_state.prototype = {
     update: function (){
         var game = this.game;
         var plane = this.plane;
-        if (game.input.pointer1.isDown) {
+        var nowPoint ={x:0,y:0};
+        if (game.input.pointer1.isDown || game.input.mousePointer.isDown) {
                 //console.log('dx,dy');
-                var nowPoint = {x:game.input.x,y:game.input.y};
+                nowPoint.x = game.input.x;
+                nowPoint.y = game.input.y;
                 if (!(this.old_point.x ==0 && this.old_point.y==0)){
                     var dx = nowPoint.x - this.old_point.x;
                     var dy = nowPoint.y - this.old_point.y;
@@ -118,6 +120,7 @@ game_state.prototype = {
             this.old_point.x = 0;
             this.old_point.y =0 ;
         }
+        nowPoint = null;
 
         for (var i=0;i<100;i++){
             bullet = this.bullet_group.getAt(this.bullet_make_index);
