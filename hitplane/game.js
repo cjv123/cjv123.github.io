@@ -284,7 +284,7 @@ gameover_state.prototype ={
         lifetime_sp.anchor.set(0.5);
         lifetime_sp.scale.set(2,2);
 
-        $("title").text("是男人就坚持20秒!,我在'打飞机'坚持了"+gametime+"秒!你也来试试吧!");
+        $("title").text("是男人就坚持20秒!我在'打飞机'坚持了"+gametime+"秒!你也来试试吧!");
 
         this.game.add.text(this.game.world.centerX, this.game.world.centerY +150,gametime.toFixed(1)+'s',{font:'72px Arial',fill:'#FF0000'}).anchor.set(0.5);
 
