@@ -55,7 +55,17 @@ define([
     return Game;
 });
 
-
+function show_ad(isShow)
+{
+    if(isShow)
+    {
+        $('#google_ad').show();
+    }
+    else
+    {
+        $('#google_ad').hide();
+    }
+}
 
 var game_timer=0;
 
@@ -89,7 +99,7 @@ game_state = function (game) {
 
 game_state.prototype = {
     preload: function () {
-
+        show_ad(false);
     },
 
     create: function () {
@@ -248,7 +258,7 @@ gameover_state = function(game){
 
 gameover_state.prototype ={
     preload: function () {
-
+        show_ad(1);
     },
 
     create: function () {
@@ -304,7 +314,7 @@ title_state = function(game){
 
 title_state.prototype ={
     preload: function () {
-
+        show_ad(true);
     },
 
     create: function () {
