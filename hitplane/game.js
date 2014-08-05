@@ -38,6 +38,7 @@ define([
             game.load.image('lifetime','resource/lifetime.png');
             game.load.image('title','resource/title.png');
             game.load.image('touchtostart','resource/touchtostart.png');
+            game.load.image('share_text','resource/share_text.png');
             game.load.spritesheet('star','resource/star.png',1,1,4);
         },
 		
@@ -137,6 +138,9 @@ game_state.prototype = {
     update: function (){
         var game = this.game;
         var plane = this.plane;
+        if(!plane.alive)
+            return;
+        
         var nowPoint ={x:0,y:0};
         if (game.input.pointer1.isDown || game.input.mousePointer.isDown) {
                 //console.log('dx,dy');
@@ -254,11 +258,14 @@ game_state.prototype = {
 gameover_state = {};
 gameover_state = function(game){
     this.game;
+    this.share_text_img;
 }
 
 gameover_state.prototype ={
     preload: function () {
         show_ad(1);
+        this.share_text_img = this.game.add.sprite(0,0,"share_text");
+        this.share_text_img.x = this.game.width - this.share_text_img.width;
     },
 
     create: function () {
@@ -299,7 +306,9 @@ gameover_state.prototype ={
         this.game.add.text(this.game.world.centerX, this.game.world.centerY +150,gametime.toFixed(1)+'s',{font:'72px Arial',fill:'#FF0000'}).anchor.set(0.5);
 
         var game = this.game;
+        var share_text_img = this.share_text_img;
         this.game.input.onTap.add(function(e){
+            share_text_img.kill();
             game.state.start('title');
         });
     }
