@@ -40,6 +40,7 @@ define([
             game.load.image('touchtostart','resource/touchtostart.png');
             game.load.image('share_text','resource/share_text.png');
             game.load.spritesheet('star','resource/star.png',1,1,4);
+            game.load.spritesheet('button', 'resource/flixel-button.png', 80, 20);
         },
 		
         create: function() {
@@ -305,12 +306,17 @@ gameover_state.prototype ={
 
         this.game.add.text(this.game.world.centerX, this.game.world.centerY +150,gametime.toFixed(1)+'s',{font:'72px Arial',fill:'#FF0000'}).anchor.set(0.5);
 
-        var game = this.game;
-        var share_text_img = this.share_text_img;
-        this.game.input.onTap.add(function(e){
-            share_text_img.kill();
-            game.state.start('title');
-        });
+        var button = this.game.add.button(this.game.world.centerX,800, 'button', function(){
+            this.share_text_img.kill();
+            this.game.state.start('title');
+        }, this, 0, 1, 2);
+        button.anchor.set(0.5);
+        button.scale.set(4,4);
+        button.smoothed = false;
+       var text = this.game.add.text(this.game.world.centerX, 807,'OK',{font:'38px Arial',fill:'#000000'});
+       text.anchor.set(0.5);
+       // text.x += (button.width / 2) - (text.textWidth / 2) - 50;
+
     }
 }
 
