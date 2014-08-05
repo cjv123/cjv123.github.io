@@ -270,30 +270,37 @@ gameover_state.prototype ={
     },
 
     create: function () {
+        var resulet_text ="";
         var gametime = game_timer/10;
         var failFrameIndex = 0;
         if (gametime<20)
         {
+            resulet_text = "早泄"
             failFrameIndex = 0;
         }
         else if (gametime>=20 && gametime<40)
         {
+            resulet_text = "合格"
             failFrameIndex = 1;
         }
         else if (gametime>=40 && gametime<60)
         {
+            resulet_text = "犀利"
             failFrameIndex = 2;
         }
         else if (gametime>=60 && gametime<80)
         {
+            resulet_text = "坚挺"
             failFrameIndex = 3;
         }
         else if (gametime>=80 && gametime<100)
         {
+            resulet_text = "顽强"
             failFrameIndex = 4;
         }
         else if (gametime>=100)
         {
+            resulet_text = "神人"
             failFrameIndex = 5;
         }
 
@@ -302,7 +309,7 @@ gameover_state.prototype ={
         lifetime_sp.anchor.set(0.5);
         lifetime_sp.scale.set(2,2);
 
-        $("title").text("是男人就坚持20秒!我在'打飞机'坚持了"+gametime+"秒!你也来试试吧!");
+        $("title").text("是男人就坚持20秒!我在'打飞机'坚持了"+gametime+"秒!获得'"+resulet_text+"'评价!你也来试试吧!");
 
         this.game.add.text(this.game.world.centerX, this.game.world.centerY +150,gametime.toFixed(1)+'s',{font:'72px Arial',fill:'#FF0000'}).anchor.set(0.5);
 
