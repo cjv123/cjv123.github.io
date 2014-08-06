@@ -266,7 +266,8 @@ gameover_state.prototype ={
     preload: function () {
         show_ad(1);
         this.share_text_img = this.game.add.sprite(0,0,"share_text");
-        this.share_text_img.x = this.game.width - this.share_text_img.width;
+        this.share_text_img.x = this.game.width - 2*this.share_text_img.width;
+        this.share_text_img.scale.set(2,2);
     },
 
     create: function () {
@@ -320,8 +321,8 @@ gameover_state.prototype ={
         button.anchor.set(0.5);
         button.scale.set(4,4);
         button.smoothed = false;
-       var text = this.game.add.text(this.game.world.centerX, 807,'OK',{font:'38px Arial',fill:'#000000'});
-       text.anchor.set(0.5);
+        var text = this.game.add.text(this.game.world.centerX, 807,'OK',{font:'38px Arial',fill:'#000000'});
+        text.anchor.set(0.5);
        // text.x += (button.width / 2) - (text.textWidth / 2) - 50;
 
     }
