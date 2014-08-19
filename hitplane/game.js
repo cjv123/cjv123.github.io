@@ -57,17 +57,6 @@ define([
     return Game;
 });
 
-function show_ad(isShow)
-{
-    if(isShow)
-    {
-        $('#google_ad').show();
-    }
-    else
-    {
-        $('#google_ad').hide();
-    }
-}
 
 var game_timer=0;
 
@@ -101,7 +90,7 @@ game_state = function (game) {
 
 game_state.prototype = {
     preload: function () {
-        show_ad(false);
+        
     },
 
     create: function () {
@@ -264,10 +253,11 @@ gameover_state = function(game){
 
 gameover_state.prototype ={
     preload: function () {
-        show_ad(1);
+       /*
         this.share_text_img = this.game.add.sprite(0,0,"share_text");
         this.share_text_img.x = this.game.width - 2*this.share_text_img.width;
         this.share_text_img.scale.set(2,2);
+        */
     },
 
     create: function () {
@@ -276,7 +266,7 @@ gameover_state.prototype ={
         var failFrameIndex = 0;
         if (gametime<20)
         {
-            resulet_text = "早泄"
+            resulet_text = "失格"
             failFrameIndex = 0;
         }
         else if (gametime>=20 && gametime<40)
@@ -315,7 +305,7 @@ gameover_state.prototype ={
         this.game.add.text(this.game.world.centerX, this.game.world.centerY +150,gametime.toFixed(1)+'s',{font:'72px Arial',fill:'#FF0000'}).anchor.set(0.5);
 
         var button = this.game.add.button(this.game.world.centerX,800, 'button', function(){
-            this.share_text_img.kill();
+            //this.share_text_img.kill();
             this.game.state.start('title');
         }, this, 0, 1, 2);
         button.anchor.set(0.5);
@@ -337,7 +327,7 @@ title_state = function(game){
 
 title_state.prototype ={
     preload: function () {
-        show_ad(true);
+        
     },
 
     create: function () {
