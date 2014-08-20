@@ -302,14 +302,14 @@ gameover_state.prototype ={
 
         this.game.add.text(this.game.world.centerX, this.game.world.centerY +150,gametime.toFixed(1)+'s',{font:'72px Arial',fill:'#FF0000'}).anchor.set(0.5);
 
-        var button = this.game.add.button(this.game.world.centerX,800, 'button', function(){
+        var button = this.game.add.button(this.game.world.centerX,700, 'button', function(){
             this.share_text_img.kill();
             this.game.state.start('title');
         }, this, 0, 1, 2);
         button.anchor.set(0.5);
         button.scale.set(4,4);
         button.smoothed = false;
-        var text = this.game.add.text(this.game.world.centerX, 807,'OK',{font:'38px Arial',fill:'#000000'});
+        var text = this.game.add.text(this.game.world.centerX, 707,'OK',{font:'38px Arial',fill:'#000000'});
         text.anchor.set(0.5);
        // text.x += (button.width / 2) - (text.textWidth / 2) - 50;
 
