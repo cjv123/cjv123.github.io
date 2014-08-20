@@ -12,15 +12,15 @@ define([
     	constructor: Game,
 
         start: function() {
-            this.game = new Phaser.Game(640,960, Phaser.CANVAS, '', {
+            this.game = new Phaser.Game(600,800, Phaser.CANVAS, '', {
                 preload: this.preload, create: this.create 
             });
         },
 
         preload: function() {
             var game = this.game;
-            game.scale.maxWidth = 640*2;
-            game.scale.maxHeight = 960*2;
+            game.scale.maxWidth = 600*2;
+            game.scale.maxHeight = 800*2;
 
             game.scale.pageAlignHorizontally = true;
             game.scale.pageAlignVertically = true;
@@ -253,11 +253,9 @@ gameover_state = function(game){
 
 gameover_state.prototype ={
     preload: function () {
-       /*
         this.share_text_img = this.game.add.sprite(0,0,"share_text");
         this.share_text_img.x = this.game.width - 2*this.share_text_img.width;
         this.share_text_img.scale.set(2,2);
-        */
     },
 
     create: function () {
@@ -305,7 +303,7 @@ gameover_state.prototype ={
         this.game.add.text(this.game.world.centerX, this.game.world.centerY +150,gametime.toFixed(1)+'s',{font:'72px Arial',fill:'#FF0000'}).anchor.set(0.5);
 
         var button = this.game.add.button(this.game.world.centerX,800, 'button', function(){
-            //this.share_text_img.kill();
+            this.share_text_img.kill();
             this.game.state.start('title');
         }, this, 0, 1, 2);
         button.anchor.set(0.5);
