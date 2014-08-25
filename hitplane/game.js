@@ -253,9 +253,7 @@ gameover_state = function(game){
 
 gameover_state.prototype ={
     preload: function () {
-        this.share_text_img = this.game.add.sprite(0,0,"share_text");
-        this.share_text_img.x = this.game.width - 2*this.share_text_img.width;
-        this.share_text_img.scale.set(2,2);
+
     },
 
     create: function () {
@@ -302,17 +300,26 @@ gameover_state.prototype ={
 
         this.game.add.text(this.game.world.centerX, this.game.world.centerY +150,gametime.toFixed(1)+'s',{font:'72px Arial',fill:'#FF0000'}).anchor.set(0.5);
 
-        var button = this.game.add.button(this.game.world.centerX,700, 'button', function(){
+        var button = this.game.add.button(this.game.world.centerX+150,700, 'button', function(){
             this.share_text_img.kill();
             this.game.state.start('title');
         }, this, 0, 1, 2);
         button.anchor.set(0.5);
-        button.scale.set(4,4);
+        button.scale.set(3,3);
         button.smoothed = false;
-        var text = this.game.add.text(this.game.world.centerX, 707,'OK',{font:'38px Arial',fill:'#000000'});
+        var text = this.game.add.text(this.game.world.centerX+150, 705,'再玩',{font:'32px Arial',fill:'#000000'});
         text.anchor.set(0.5);
-       // text.x += (button.width / 2) - (text.textWidth / 2) - 50;
 
+        button = this.game.add.button(this.game.world.centerX-150,700, 'button', function(){
+            this.share_text_img = this.game.add.sprite(0,0,"share_text");
+            this.share_text_img.x = this.game.width - 2*this.share_text_img.width;
+            this.share_text_img.scale.set(2,2);
+        }, this, 0, 1, 2);
+        button.anchor.set(0.5);
+        button.scale.set(3,3);
+        button.smoothed = false;
+        var text = this.game.add.text(this.game.world.centerX-150, 705,'分享',{font:'32px Arial',fill:'#000000'});
+        text.anchor.set(0.5);
     }
 }
 
